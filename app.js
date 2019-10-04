@@ -8,14 +8,19 @@ var Message = require('azure-iot-device').Message;
 
 const mqtt = require('mqtt')
 var mclient = mqtt.connect(process.env.BROKER)
+var topics = process.env.TOPICS
 
 mclient.on('connect', function () {
-  let topic = "northvolt/+/#";
-  mclient.subscribe(topic, function (err) {
-    if (err) {
-      console.error(err)
-    } else console.log(`connected to ${process.env.BROKER}`)
-  });
+  console.log(`connected to ${process.env.BROKER}`)
+  for (var i = 0; i < topics.length; i++){
+    mclient.subscribe(topics[i], function (err) {
+      if (err) {
+        console.error(err)
+      } else 
+      console.log(`subscribed to ${topics[i]}`)
+    });
+  }
+
 });
 
 mclient.on('message', function (topic, msg) {
